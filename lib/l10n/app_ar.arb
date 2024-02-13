@@ -1,0 +1,19 @@
+{
+    "appBarTitle":"قائمه المهام",
+    "taskTitle":"عنوان المهمه",
+    "taskDesc":"وصف المهمه",
+    "addTask":"إضافه مهمه",
+    "errorMessegeTitle":"أضف عنوان من فضلك",
+    "errorMessegeDesc":"أضف وصف من فضلك",
+    "selectDate":"اختيار ميعاد",
+    "addButton":"إضافه",
+    "language":"اللغه",
+    "english":"الانجليزيه",
+    "arabic":"العربيه",
+    "theme":"نمط", 
+    "light":"مضيئ",
+    "dark":"ليلي",
+    "locale":"ar",
+    "hintTitle":"ادخل عنوان المهمه",
+    "hintDesc":"ادخل وصف المهمه"
+}

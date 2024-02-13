@@ -1,0 +1,19 @@
+{
+    "appBarTitle":"To Do List",
+    "taskTitle":"Task Title",
+    "taskDesc":"Task Description",
+    "addTask":"Add Task",
+    "errorMessegeTitle":"please enter task title",
+    "errorMessegeDesc":"please enter task description",
+    "selectDate":"Select Date",
+    "addButton":"Add",
+    "language":"Language",
+    "english":"English",
+    "arabic":"arabic",
+    "theme":"Theme", 
+    "light":"Light",
+    "dark":"Dark",
+    "locale":"en",
+    "hintTitle":"enter task title",
+    "hintDesc":"enter task description"
+}
