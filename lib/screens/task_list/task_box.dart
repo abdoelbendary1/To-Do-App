@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app1/providers/app_config_provider.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -7,12 +9,16 @@ class TaskBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<AppConfigProvider>(context);
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       width: double.infinity,
       height: MediaQuery.of(context).size.height * 0.15,
       decoration: BoxDecoration(
-          color: AppTheme.whiteColor, borderRadius: BorderRadius.circular(15)),
+          color: provider.appTheme == ThemeMode.light
+              ? AppTheme.whiteColor
+              : AppTheme.cardColorDark,
+          borderRadius: BorderRadius.circular(15)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
@@ -25,7 +31,7 @@ class TaskBox extends StatelessWidget {
                   color: AppTheme.primaryColor,
                   borderRadius: BorderRadius.circular(10)),
             ),
-             Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

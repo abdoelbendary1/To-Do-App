@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app1/providers/app_config_provider.dart';
+import 'package:todo_app1/screens/settings/ThemeBottomSheet.dart';
 import 'package:todo_app1/screens/settings/settingBotttomSheet.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,8 +18,11 @@ class SettingsTab extends StatefulWidget {
 class _SettingsTabState extends State<SettingsTab> {
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<AppConfigProvider>(context);
     return Container(
-      color: AppTheme.backgroundColor,
+      color: provider.appTheme == ThemeMode.light
+          ? AppTheme.backgroundColor
+          : AppTheme.backgrounColorDark,
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -24,7 +30,11 @@ class _SettingsTabState extends State<SettingsTab> {
           children: [
             Text(
               AppLocalizations.of(context)!.language,
-              style: Theme.of(context).textTheme.titleSmall,
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    color: provider.appTheme == ThemeMode.light
+                        ? AppTheme.blackColor
+                        : AppTheme.whiteColor,
+                  ),
             ),
             SizedBox(
               height: 10,
@@ -36,7 +46,9 @@ class _SettingsTabState extends State<SettingsTab> {
               child: Container(
                 height: 50,
                 decoration: BoxDecoration(
-                    color: AppTheme.whiteColor,
+                    color: provider.appTheme == ThemeMode.light
+                        ? AppTheme.whiteColor
+                        : AppTheme.bottomAppBarColorDark,
                     border: Border.all(color: AppTheme.primaryColor, width: 1)),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -44,10 +56,17 @@ class _SettingsTabState extends State<SettingsTab> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        AppLocalizations.of(context)!.english,
+                        provider.appLanguage == "en"
+                            ? AppLocalizations.of(context)!.english
+                            : AppLocalizations.of(context)!.arabic,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      Icon(Icons.arrow_drop_down_sharp)
+                      Icon(
+                        Icons.arrow_drop_down_sharp,
+                        color: provider.appTheme == ThemeMode.light
+                            ? AppTheme.blackColor
+                            : AppTheme.whiteColor,
+                      )
                     ],
                   ),
                 ),
@@ -58,7 +77,11 @@ class _SettingsTabState extends State<SettingsTab> {
             ),
             Text(
               AppLocalizations.of(context)!.theme,
-              style: Theme.of(context).textTheme.titleSmall,
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    color: provider.appTheme == ThemeMode.light
+                        ? AppTheme.blackColor
+                        : AppTheme.whiteColor,
+                  ),
             ),
             SizedBox(
               height: 10,
@@ -70,7 +93,9 @@ class _SettingsTabState extends State<SettingsTab> {
               child: Container(
                 height: 50,
                 decoration: BoxDecoration(
-                    color: AppTheme.whiteColor,
+                    color: provider.appTheme == ThemeMode.light
+                        ? AppTheme.whiteColor
+                        : AppTheme.bottomAppBarColorDark,
                     border: Border.all(color: AppTheme.primaryColor, width: 1)),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -78,10 +103,17 @@ class _SettingsTabState extends State<SettingsTab> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        AppLocalizations.of(context)!.light,
+                        provider.appTheme == ThemeMode.light
+                            ? AppLocalizations.of(context)!.light
+                            : AppLocalizations.of(context)!.dark,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      Icon(Icons.arrow_drop_down_sharp)
+                      Icon(
+                        Icons.arrow_drop_down_sharp,
+                        color: provider.appTheme == ThemeMode.light
+                            ? AppTheme.blackColor
+                            : AppTheme.whiteColor,
+                      )
                     ],
                   ),
                 ),
@@ -95,19 +127,11 @@ class _SettingsTabState extends State<SettingsTab> {
 
   void showLanguageBottomSheet() {
     showModalBottomSheet(
-        context: context,
-        builder: (context) => ShowBottomSheet(
-              option1: AppLocalizations.of(context)!.english,
-              option2: AppLocalizations.of(context)!.arabic,
-            ));
+        context: context, builder: (context) => ShowLanguageBottomSheet());
   }
 
   void showThemeBottomSheet() {
     showModalBottomSheet(
-        context: context,
-        builder: (context) => ShowBottomSheet(
-              option1: AppLocalizations.of(context)!.light,
-              option2: AppLocalizations.of(context)!.dark,
-            ));
+        context: context, builder: (context) => ShowThemBottomSheet());
   }
 }

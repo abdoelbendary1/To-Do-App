@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app1/providers/app_config_provider.dart';
 import 'package:todo_app1/screens/settings/settings.dart';
 import 'package:todo_app1/screens/task_list/bottomSheet.dart';
 import 'package:todo_app1/screens/task_list/task_list_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo_app1/theme/AppTheme.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -22,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<AppConfigProvider>(context);
     return Scaffold(
         extendBody: true,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -42,6 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
         bottomNavigationBar: SizedBox(
           height: MediaQuery.of(context).size.height * 0.12,
           child: BottomAppBar(
+            color: provider.appTheme == ThemeMode.light
+                ? AppTheme.whiteColor
+                : AppTheme.bottomAppBarColorDark,
             shape: const CircularNotchedRectangle(),
             notchMargin: 12,
             child: BottomNavigationBar(
