@@ -19,8 +19,14 @@ class _ShowThemBottomSheetState extends State<ShowThemBottomSheet> {
       width: double.infinity,
       height: MediaQuery.of(context).size.height * 0.3,
       decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
-          borderRadius: BorderRadius.circular(25)),
+        color: provider.appTheme == ThemeMode.light
+            ? AppTheme.whiteColor
+            : AppTheme.bottomAppBarColorDark,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(25),
+          topRight: Radius.circular(25),
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 36),
         child: Column(

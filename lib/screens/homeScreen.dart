@@ -37,40 +37,37 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         appBar: AppBar(
           titleSpacing: 30,
-          toolbarHeight: MediaQuery.of(context).size.height * .2,
+          toolbarHeight: MediaQuery.of(context).size.height * .11,
           title: Text(
             AppLocalizations.of(context)!.appBarTitle,
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        bottomNavigationBar: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.12,
-          child: BottomAppBar(
-            color: provider.appTheme == ThemeMode.light
-                ? AppTheme.whiteColor
-                : AppTheme.bottomAppBarColorDark,
-            shape: const CircularNotchedRectangle(),
-            notchMargin: 12,
-            child: BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                onTap: (index) {
-                  selectedIndex = index;
-                  setState(() {});
-                },
-                currentIndex: selectedIndex,
-                items: const [
-                  BottomNavigationBarItem(
-                      icon: Icon(
-                        Icons.list,
-                      ),
-                      label: "Task List"),
-                  BottomNavigationBarItem(
-                      icon: Icon(
-                        Icons.settings,
-                      ),
-                      label: "Settings"),
-                ]),
-          ),
+        bottomNavigationBar: BottomAppBar(
+          height: MediaQuery.of(context).size.height * 0.115,
+          color: provider.appTheme == ThemeMode.light
+              ? AppTheme.whiteColor
+              : AppTheme.bottomAppBarColorDark,
+          shape: const CircularNotchedRectangle(),
+          notchMargin: 12,
+          child: BottomNavigationBar(
+              onTap: (index) {
+                selectedIndex = index;
+                setState(() {});
+              },
+              currentIndex: selectedIndex,
+              items: const [
+                BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.list,
+                    ),
+                    label: "Task List"),
+                BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.settings,
+                    ),
+                    label: "Settings"),
+              ]),
         ),
         body: tabs[selectedIndex]);
   }

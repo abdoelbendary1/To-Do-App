@@ -23,104 +23,115 @@ class _SettingsTabState extends State<SettingsTab> {
       color: provider.appTheme == ThemeMode.light
           ? AppTheme.backgroundColor
           : AppTheme.backgrounColorDark,
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.language,
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: provider.appTheme == ThemeMode.light
-                        ? AppTheme.blackColor
-                        : AppTheme.whiteColor,
-                  ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            GestureDetector(
-              onTap: () {
-                showLanguageBottomSheet();
-              },
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                    color: provider.appTheme == ThemeMode.light
-                        ? AppTheme.whiteColor
-                        : AppTheme.bottomAppBarColorDark,
-                    border: Border.all(color: AppTheme.primaryColor, width: 1)),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        provider.appLanguage == "en"
-                            ? AppLocalizations.of(context)!.english
-                            : AppLocalizations.of(context)!.arabic,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      Icon(
-                        Icons.arrow_drop_down_sharp,
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.08,
+            color: AppTheme.primaryColor,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.language,
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: provider.appTheme == ThemeMode.light
                             ? AppTheme.blackColor
                             : AppTheme.whiteColor,
-                      )
-                    ],
+                      ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    showLanguageBottomSheet();
+                  },
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: provider.appTheme == ThemeMode.light
+                            ? AppTheme.whiteColor
+                            : AppTheme.bottomAppBarColorDark,
+                        border:
+                            Border.all(color: AppTheme.primaryColor, width: 1)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            provider.appLanguage == "en"
+                                ? AppLocalizations.of(context)!.english
+                                : AppLocalizations.of(context)!.arabic,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          Icon(
+                            Icons.arrow_drop_down_sharp,
+                            color: provider.appTheme == ThemeMode.light
+                                ? AppTheme.blackColor
+                                : AppTheme.whiteColor,
+                          )
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Text(
-              AppLocalizations.of(context)!.theme,
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: provider.appTheme == ThemeMode.light
-                        ? AppTheme.blackColor
-                        : AppTheme.whiteColor,
-                  ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            GestureDetector(
-              onTap: () {
-                showThemeBottomSheet();
-              },
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                    color: provider.appTheme == ThemeMode.light
-                        ? AppTheme.whiteColor
-                        : AppTheme.bottomAppBarColorDark,
-                    border: Border.all(color: AppTheme.primaryColor, width: 1)),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        provider.appTheme == ThemeMode.light
-                            ? AppLocalizations.of(context)!.light
-                            : AppLocalizations.of(context)!.dark,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      Icon(
-                        Icons.arrow_drop_down_sharp,
+                SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  AppLocalizations.of(context)!.theme,
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: provider.appTheme == ThemeMode.light
                             ? AppTheme.blackColor
                             : AppTheme.whiteColor,
-                      )
-                    ],
+                      ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    showThemeBottomSheet();
+                  },
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: provider.appTheme == ThemeMode.light
+                            ? AppTheme.whiteColor
+                            : AppTheme.bottomAppBarColorDark,
+                        border:
+                            Border.all(color: AppTheme.primaryColor, width: 1)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            provider.appTheme == ThemeMode.light
+                                ? AppLocalizations.of(context)!.light
+                                : AppLocalizations.of(context)!.dark,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          Icon(
+                            Icons.arrow_drop_down_sharp,
+                            color: provider.appTheme == ThemeMode.light
+                                ? AppTheme.blackColor
+                                : AppTheme.whiteColor,
+                          )
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
