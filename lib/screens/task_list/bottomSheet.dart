@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app1/providers/app_config_provider.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -17,96 +19,138 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   TextEditingController taskDescriptionController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                AppLocalizations.of(context)!.addTask,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleSmall,
+    var provider = Provider.of<AppConfigProvider>(context);
+    return SingleChildScrollView(
+      child: Container(
+        decoration: BoxDecoration(
+          color: provider.appTheme == ThemeMode.light
+              ? AppTheme.whiteColor
+              : AppTheme.bottomAppBarColorDark,
+          borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+        ),
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  AppLocalizations.of(context)!.addTask,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        color: provider.appTheme == ThemeMode.light
+                            ? AppTheme.blackColor
+                            : AppTheme.whiteColor,
+                      ),
+                ),
               ),
-            ),
-            Form(
-                key: formkey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        controller: taskTitleController,
-                        validator: (text) {
-                          if (text == null || text.isEmpty) {
-                            return AppLocalizations.of(context)!
-                                .errorMessegeTitle;
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!.hintTitle,
+              Form(
+                  key: formkey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: taskTitleController,
+                          validator: (text) {
+                            if (text == null || text.isEmpty) {
+                              return AppLocalizations.of(context)!
+                                  .errorMessegeTitle;
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            hintText: AppLocalizations.of(context)!.hintTitle,
+                            hintStyle: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                  color: provider.appTheme == ThemeMode.light
+                                      ? AppTheme.blackColor
+                                      : AppTheme.whiteColor,
+                                ),
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        controller: taskDescriptionController,
-                        validator: (text) {
-                          if (text == null || text.isEmpty) {
-                            return AppLocalizations.of(context)!
-                                .errorMessegeDesc;
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!.hintDesc,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: taskDescriptionController,
+                          validator: (text) {
+                            if (text == null || text.isEmpty) {
+                              return AppLocalizations.of(context)!
+                                  .errorMessegeDesc;
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            hintText: AppLocalizations.of(context)!.hintDesc,
+                            hintStyle: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                  color: provider.appTheme == ThemeMode.light
+                                      ? AppTheme.blackColor
+                                      : AppTheme.whiteColor,
+                                ),
+                          ),
+                          maxLines: 3,
                         ),
-                        maxLines: 3,
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        AppLocalizations.of(context)!.selectDate,
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          pickDate();
-                        },
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          DateFormat.yMMMd().format(selectedDate),
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleSmall,
+                          AppLocalizations.of(context)!.selectDate,
+                          style:
+                              Theme.of(context).textTheme.titleSmall!.copyWith(
+                                    color: provider.appTheme == ThemeMode.light
+                                        ? AppTheme.blackColor
+                                        : AppTheme.whiteColor,
+                                  ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.primaryColor,
-                            foregroundColor: AppTheme.whiteColor,
-                            textStyle: Theme.of(context).textTheme.titleSmall,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20))),
-                        onPressed: () {
-                          addTask();
-                        },
-                        child: Text(AppLocalizations.of(context)!.addButton),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            pickDate();
+                          },
+                          child: Text(
+                            DateFormat.yMMMd().format(selectedDate),
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(
+                                  color: provider.appTheme == ThemeMode.light
+                                      ? AppTheme.blackColor
+                                      : AppTheme.whiteColor,
+                                ),
+                          ),
+                        ),
                       ),
-                    )
-                  ],
-                )),
-          ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: AppTheme.primaryColor,
+                              foregroundColor: AppTheme.whiteColor,
+                              textStyle: Theme.of(context).textTheme.titleSmall,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20))),
+                          onPressed: () {
+                            addTask();
+                          },
+                          child: Text(AppLocalizations.of(context)!.addButton),
+                        ),
+                      )
+                    ],
+                  )),
+            ],
+          ),
         ),
       ),
     );

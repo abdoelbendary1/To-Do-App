@@ -4,13 +4,12 @@ import 'package:todo_app1/providers/app_config_provider.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 class ShowLanguageBottomSheet extends StatefulWidget {
   ShowLanguageBottomSheet();
-  
 
   @override
-  State<ShowLanguageBottomSheet> createState() => _ShowLanguageBottomSheetState();
+  State<ShowLanguageBottomSheet> createState() =>
+      _ShowLanguageBottomSheetState();
 }
 
 class _ShowLanguageBottomSheetState extends State<ShowLanguageBottomSheet> {
@@ -21,8 +20,14 @@ class _ShowLanguageBottomSheetState extends State<ShowLanguageBottomSheet> {
       width: double.infinity,
       height: MediaQuery.of(context).size.height * 0.3,
       decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
-          borderRadius: BorderRadius.circular(25)),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(25),
+          topRight: Radius.circular(25),
+        ),
+        color: provider.appTheme == ThemeMode.light
+            ? AppTheme.whiteColor
+            : AppTheme.bottomAppBarColorDark,
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 36),
         child: Column(
