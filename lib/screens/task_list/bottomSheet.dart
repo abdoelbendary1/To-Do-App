@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app1/firebaseUtils.dart';
+import 'package:todo_app1/model/task.dart';
 import 'package:todo_app1/providers/app_config_provider.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 import 'package:intl/intl.dart';
@@ -172,8 +174,16 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
 
   void addTask() {
     if (formkey.currentState?.validate() == true) {
-      print(taskTitleController.text);
-      print(taskDescriptionController.text);
+      Task task = Task(
+        title: taskTitleController.text,
+        description: taskDescriptionController.text,
+        dateTime: selectedDate,
+      );
+      FireBaseUtils.addTaskToFireStore(task)
+          .timeout(const Duration(milliseconds: 500), onTimeout: () {
+        print("Task added succesfully");
+        Navigator.pop(context);
+      });
     }
   }
 }
