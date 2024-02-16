@@ -11,9 +11,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FirebaseFirestore.instance.disableNetwork();
-  FirebaseFirestore.instance.settings =
-      const Settings(cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
   //Unhandled Exception: PlatformException(null-error, Host platform returned null) firebase (Solved).
   Platform.isAndroid
       ? await Firebase.initializeApp(
@@ -24,6 +21,9 @@ void main() async {
               projectId: "to-do-app-demo-38b05"),
         )
       : await Firebase.initializeApp();
+  await FirebaseFirestore.instance.disableNetwork();
+  FirebaseFirestore.instance.settings =
+      const Settings(cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
 
   runApp(ChangeNotifierProvider(
       create: (context) => AppConfigProvider(), child: const MyApp()));
