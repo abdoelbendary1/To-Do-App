@@ -17,4 +17,13 @@ class FireBaseUtils {
     task.id = taskDocRef.id;
     return taskDocRef.set(task);
   }
+
+  static Future<List<Task>> getAllTasks() async {
+    //return list of querySnapshot
+    QuerySnapshot<Task> data =
+        await getTasksCollection().orderBy("dateTime").get();
+    //return list of tasks
+    List<Task> tasksList = data.docs.map((doc) => doc.data()).toList();
+    return tasksList;
+  }
 }

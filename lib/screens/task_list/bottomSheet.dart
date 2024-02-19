@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
 import 'package:todo_app1/firebaseUtils.dart';
 import 'package:todo_app1/model/task.dart';
+import 'package:todo_app1/providers/ListProvider.dart';
 import 'package:todo_app1/providers/app_config_provider.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
   AddTaskBottomSheet({super.key});
@@ -22,6 +24,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet>
   TextEditingController taskTitleController = TextEditingController();
   TextEditingController taskDescriptionController = TextEditingController();
   late AnimationController animationController;
+  late ListProvider listProvider;
 
   //? toast msg
   FToast fToast = FToast();
@@ -71,6 +74,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet>
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
+    listProvider = Provider.of<ListProvider>(context);
     return buildBottomSheet(provider, context);
   }
 
@@ -264,7 +268,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet>
       taskIconTapped();
       FireBaseUtils.addTaskToFireStore(task)
           .timeout(const Duration(milliseconds: 500), onTimeout: () {
-        print("Task added succesfully");
+        listProvider.getTasksList();
         Navigator.pop(context);
       });
     }

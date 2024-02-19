@@ -6,12 +6,13 @@ class Task {
   DateTime dateTime;
   bool isDone;
 
-  Task(
-      {this.id = "",
-      required this.title,
-      required this.description,
-      this.isDone = false,
-      required this.dateTime});
+  Task({
+    this.id = "",
+    required this.title,
+    required this.description,
+    this.isDone = false,
+    required this.dateTime,
+  });
 
   Task.fromFireStore(Map<String, dynamic> data)
       : this(

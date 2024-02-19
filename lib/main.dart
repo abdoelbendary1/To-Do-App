@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app1/providers/ListProvider.dart';
 import 'package:todo_app1/providers/app_config_provider.dart';
 import 'package:todo_app1/screens/homeScreen.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
@@ -25,8 +26,19 @@ void main() async {
   FirebaseFirestore.instance.settings =
       const Settings(cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
 
-  runApp(ChangeNotifierProvider(
-      create: (context) => AppConfigProvider(), child: const MyApp()));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => AppConfigProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ListProvider(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
