@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app1/model/task.dart';
 import 'package:todo_app1/providers/app_config_provider.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TaskBox extends StatelessWidget {
-  const TaskBox({super.key});
+  TaskBox({super.key, required this.task});
+  Task task;
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +37,8 @@ class TaskBox extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(AppLocalizations.of(context)!.taskTitle),
-                Text(AppLocalizations.of(context)!.taskDesc),
+                Text(task.title ?? "Unknown task"),
+                Text(task.description ?? "Unknown description "),
               ],
             ),
             const SizedBox(
