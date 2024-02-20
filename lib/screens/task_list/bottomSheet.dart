@@ -78,10 +78,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet>
     return buildBottomSheet(provider, context);
   }
 
-  Widget buildBottomSheet(
-    AppConfigProvider provider,
-    BuildContext context,
-  ) {
+  Widget buildBottomSheet(AppConfigProvider provider, BuildContext context) {
     return SingleChildScrollView(
       child: Container(
         // bottomSheet decoration

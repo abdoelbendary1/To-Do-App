@@ -9,19 +9,14 @@ import 'package:todo_app1/providers/app_config_provider.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class TaskBox extends StatefulWidget {
+class TaskBox extends StatelessWidget {
   TaskBox({super.key, required this.task});
   Task task;
 
   @override
-  State<TaskBox> createState() => _TaskBoxState();
-}
-
-class _TaskBoxState extends State<TaskBox> {
-  @override
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
-
+    var listProivider = Provider.of<ListProvider>(context);
     return Slidable(
       startActionPane: ActionPane(
         motion: ScrollMotion(),
@@ -34,11 +29,11 @@ class _TaskBoxState extends State<TaskBox> {
               topRight: Radius.circular(10),
             ),
             onPressed: (context) {
-              FireBaseUtils.deleteTaskFromList(widget.task).timeout(
+              FireBaseUtils.deleteTaskFromList(task).timeout(
                 Duration(
                   milliseconds: 500,
                 ),
-                onTimeout: () => print("task deleted"),
+                onTimeout: () => listProivider.getTasksList(),
               );
             },
             backgroundColor: AppTheme.redColor,
@@ -74,8 +69,8 @@ class _TaskBoxState extends State<TaskBox> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text(widget.task.title ?? "Unknown task"),
-                  Text(widget.task.description ?? "Unknown description "),
+                  Text(task.title ?? "Unknown task"),
+                  Text(task.description ?? "Unknown description "),
                 ],
               ),
               const SizedBox(

@@ -24,27 +24,25 @@ class _TaskListTabState extends State<TaskListTab> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      fetchData();
-    });
+    // fetchData();
   }
 
-  Future<void> fetchData() async {
-    var listProvider = Provider.of<ListProvider>(context);
-    listProvider.getTasksList();
-    setState(() {
-      tasksList = listProvider.tasksList;
-    });
-  }
+  // Future<void> fetchData() async {
+  //   var listProvider = Provider.of<ListProvider>(context);
+  //   listProvider.getTasksList();
+  //   setState(() {
+  //     tasksList = listProvider.tasksList;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
-    var listProvider = Provider.of<ListProvider>(context);
-    /* if (listProvider.tasksList.isEmpty) {
-      listProvider.getTasksList();
-      print("task build");
-    } */
+    var listProivider = Provider.of<ListProvider>(context);
+    if (listProivider.tasksList == null) {
+      print("بحبك");
+      listProivider.getTasksList();
+    }
 
     return Column(
       children: [
@@ -136,13 +134,13 @@ class _TaskListTabState extends State<TaskListTab> {
                 ),
                 controller: _controller,
                 firstDate: DateTime.now(),
-                focusDate: listProvider.selectedDate,
+                focusDate: listProivider.selectedDate,
                 lastDate: DateTime.now().add(Duration(days: 365)),
                 onDateChange: (date) {
-                  listProvider.changeSelectedDay(date);
+                  listProivider.changeSelectedDay(date);
+                  listProivider.getTasksList();
 
-                  setState(() {});
-                  print(listProvider.selectedDate);
+                  print(listProivider.selectedDate);
                 },
               ),
             ),
@@ -151,13 +149,13 @@ class _TaskListTabState extends State<TaskListTab> {
         Expanded(
           child: ListView.separated(
             itemBuilder: (context, index) => TaskBox(
-              task: listProvider.tasksList[index],
+              task: listProivider.tasksList[index],
             ),
             separatorBuilder: (context, index) => const Divider(
-              height: 25,
+              height: 20,
               color: Colors.transparent,
             ),
-            itemCount: listProvider.tasksList.length,
+            itemCount: listProivider.tasksList.length,
           ),
         )
       ],
