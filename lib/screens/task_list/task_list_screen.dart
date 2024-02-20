@@ -39,9 +39,9 @@ class _TaskListTabState extends State<TaskListTab> {
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
     var listProivider = Provider.of<ListProvider>(context);
-    if (listProivider.tasksList.isEmpty) {
+    if (listProivider.tasksList == null) {
+      print("بحبك");
       listProivider.getTasksList();
-      setState(() {});
     }
 
     return Column(
@@ -138,7 +138,8 @@ class _TaskListTabState extends State<TaskListTab> {
                 lastDate: DateTime.now().add(Duration(days: 365)),
                 onDateChange: (date) {
                   listProivider.changeSelectedDay(date);
-                  setState(() {});
+                  listProivider.getTasksList();
+
                   print(listProivider.selectedDate);
                 },
               ),
@@ -150,8 +151,8 @@ class _TaskListTabState extends State<TaskListTab> {
             itemBuilder: (context, index) => TaskBox(
               task: listProivider.tasksList[index],
             ),
-            separatorBuilder: (context, index) => Divider(
-              thickness: 1,
+            separatorBuilder: (context, index) => const Divider(
+              height: 20,
               color: Colors.transparent,
             ),
             itemCount: listProivider.tasksList.length,

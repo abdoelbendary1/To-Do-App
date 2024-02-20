@@ -6,18 +6,19 @@ class ListProvider extends ChangeNotifier {
   List<Task> tasksList = [];
   DateTime selectedDate = DateTime.now();
   void getTasksList() async {
-    List<Task> allTasksList = await FireBaseUtils.getAllTasks();
-    tasksList = allTasksList.where((task) {
-      if (selectedDate.day == task.dateTime.day &&
-          selectedDate.month == task.dateTime.month &&
-          selectedDate.year == task.dateTime.year) {
+    tasksList = await FireBaseUtils.getAllTasks();
+    tasksList = tasksList.where((task) {
+      if (selectedDate.day == task.dateTime!.day &&
+          selectedDate.month == task.dateTime!.month &&
+          selectedDate.year == task.dateTime!.year) {
         return true;
       } else {
         return false;
       }
     }).toList();
 
-    // tasksList.sort((task1, task2) => task1.dateTime.compareTo(task2.dateTime));
+    tasksList
+        .sort((task1, task2) => task1.dateTime!.compareTo(task2.dateTime!));
     notifyListeners();
   }
 

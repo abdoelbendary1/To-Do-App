@@ -26,4 +26,8 @@ class FireBaseUtils {
     List<Task> tasksList = data.docs.map((doc) => doc.data()).toList();
     return tasksList;
   }
+
+  static Future<void> deleteTaskFromList(Task task) {
+    return getTasksCollection().doc(task.id).delete();
+  }
 }
