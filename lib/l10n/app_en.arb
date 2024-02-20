@@ -15,5 +15,6 @@
     "dark":"Dark",
     "locale":"en",
     "hintTitle":"enter task title",
-    "hintDesc":"enter task description"
+    "hintDesc":"enter task description",
+    "editTask":"Edit Task"
 }

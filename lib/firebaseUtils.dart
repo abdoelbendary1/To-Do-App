@@ -21,7 +21,7 @@ class FireBaseUtils {
   static Future<List<Task>> getAllTasks() async {
     //return list of querySnapshot
     QuerySnapshot<Task> data =
-        await getTasksCollection().orderBy("dateTime").get();
+        await getTasksCollection().orderBy("dateTime", descending: true).get();
     //return list of tasks
     List<Task> tasksList = data.docs.map((doc) => doc.data()).toList();
     return tasksList;
@@ -29,5 +29,9 @@ class FireBaseUtils {
 
   static Future<void> deleteTaskFromList(Task task) {
     return getTasksCollection().doc(task.id).delete();
+  }
+
+  static Future<void> updateTaskFromList(Task task) {
+    return getTasksCollection().doc(task.id).update({"title": task.title});
   }
 }

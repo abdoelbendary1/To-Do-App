@@ -40,7 +40,7 @@ class _TaskListTabState extends State<TaskListTab> {
     var provider = Provider.of<AppConfigProvider>(context);
     var listProivider = Provider.of<ListProvider>(context);
     if (listProivider.tasksList == null) {
-      print("بحبك");
+      print("build screen");
       listProivider.getTasksList();
     }
 

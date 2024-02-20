@@ -17,8 +17,6 @@ class ListProvider extends ChangeNotifier {
       }
     }).toList();
 
-    tasksList
-        .sort((task1, task2) => task1.dateTime!.compareTo(task2.dateTime!));
     notifyListeners();
   }
 
@@ -27,5 +25,34 @@ class ListProvider extends ChangeNotifier {
     // refresh tasks list with filtering
     getTasksList();
     notifyListeners();
+  }
+
+  Future<void> updateTaskIsDone(Task task) async {
+    await FireBaseUtils.getTasksCollection()
+        .doc(task.id)
+        .update({'isDone': true})
+        .timeout(
+          Duration(
+            milliseconds: 300,
+          ),
+          onTimeout: () => getTasksList(),
+        )
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> updateTaskDetails(Task task) async {
+    if (task.id!.isEmpty) {
+      print("Updated");
+      await FireBaseUtils.getTasksCollection()
+          .doc(task.id)
+          .update(task.toFireStore())
+          .timeout(
+            Duration(
+              milliseconds: 300,
+            ),
+            onTimeout: () => getTasksList(),
+          )
+          .catchError((error) => print("Failed to update user: $error"));
+    }
   }
 }
