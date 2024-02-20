@@ -78,7 +78,10 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet>
     return buildBottomSheet(provider, context);
   }
 
-  Widget buildBottomSheet(AppConfigProvider provider, BuildContext context) {
+  Widget buildBottomSheet(
+    AppConfigProvider provider,
+    BuildContext context,
+  ) {
     return SingleChildScrollView(
       child: Container(
         // bottomSheet decoration
@@ -269,6 +272,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet>
       FireBaseUtils.addTaskToFireStore(task)
           .timeout(const Duration(milliseconds: 500), onTimeout: () {
         listProvider.getTasksList();
+        print("task added");
         Navigator.pop(context);
       });
     }
