@@ -41,18 +41,16 @@ class ListProvider extends ChangeNotifier {
   }
 
   Future<void> updateTaskDetails(Task task) async {
-    if (task.id!.isEmpty) {
-      print("Updated");
-      await FireBaseUtils.getTasksCollection()
-          .doc(task.id)
-          .update(task.toFireStore())
-          .timeout(
-            Duration(
-              milliseconds: 300,
-            ),
-            onTimeout: () => getTasksList(),
-          )
-          .catchError((error) => print("Failed to update user: $error"));
-    }
+    await FireBaseUtils.getTasksCollection()
+        .doc(task.id)
+        .update(task.toFireStore())
+        .timeout(
+          Duration(
+            milliseconds: 300,
+          ),
+          onTimeout: () => getTasksList(),
+        )
+        .catchError((error) => print("Failed to update user: $error"));
+    print("Edited");
   }
 }

@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app1/firebaseUtils.dart';
+
 import 'package:todo_app1/model/task.dart';
 import 'package:todo_app1/providers/ListProvider.dart';
 import 'package:todo_app1/providers/app_config_provider.dart';
-import 'package:todo_app1/screens/settings/settings.dart';
-import 'package:todo_app1/screens/task_list/bottomSheet.dart';
-import 'package:todo_app1/screens/task_list/task_list_screen.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo_app1/screens/task_list/toasts.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 
 class EditTaskScreen extends StatefulWidget {
@@ -29,42 +27,16 @@ class _EditTaskScreenState extends State<EditTaskScreen>
   var selectedDate = DateTime.now();
   late AnimationController animationController;
   late ListProvider listProvider;
+  FToast fToast = FToast();
 
   //? toast msg
-  FToast fToast = FToast();
-  Widget editToast = Container(
-    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(25.0),
-      color: AppTheme.greenColor.withOpacity(0.9),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          Icons.check,
-          color: AppTheme.whiteColor,
-        ),
-        SizedBox(
-          width: 12.0,
-        ),
-        Text(
-          "Task Edited Succesfully!",
-          style: TextStyle(color: AppTheme.whiteColor, fontSize: 20),
-        ),
-      ],
-    ),
-  );
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    //fToast = FToast();
-    // if you want to use context from globally instead of content we need to pass navigatorKey.currentContext!
+
     fToast.init(context);
-    widget.task.title = taskTitleController.text;
-    widget.task.description = taskDescriptionController.text;
 
     animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 400));
@@ -83,7 +55,8 @@ class _EditTaskScreenState extends State<EditTaskScreen>
     listProvider = Provider.of<ListProvider>(context);
 
     var args = ModalRoute.of(context)!.settings.arguments as Task;
-    
+    widget.task = args;
+
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
@@ -114,7 +87,9 @@ class _EditTaskScreenState extends State<EditTaskScreen>
                   width: MediaQuery.of(context).size.width * .85,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    color: AppTheme.whiteColor,
+                    color: provider.appTheme == ThemeMode.light
+                        ? AppTheme.whiteColor
+                        : AppTheme.bottomAppBarColorDark,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(24.0),
@@ -150,7 +125,14 @@ class _EditTaskScreenState extends State<EditTaskScreen>
 
                                   //task title data
                                   child: TextFormField(
-                                    controller: taskTitleController,
+                                    style: TextStyle(
+                                      color:
+                                          provider.appTheme == ThemeMode.light
+                                              ? AppTheme.blackColor
+                                              : AppTheme.whiteColor,
+                                    ),
+                                    controller: taskTitleController =
+                                        TextEditingController(text: args.title),
                                     validator: (text) {
                                       if (text == null || text.isEmpty) {
                                         return AppLocalizations.of(context)!
@@ -159,7 +141,7 @@ class _EditTaskScreenState extends State<EditTaskScreen>
                                       return null;
                                     },
                                     decoration: InputDecoration(
-                                      hintText: args.title,
+                                      // hintText: args.title,
                                       hintStyle: Theme.of(context)
                                           .textTheme
                                           .bodyLarge!
@@ -183,7 +165,15 @@ class _EditTaskScreenState extends State<EditTaskScreen>
 
                                   //task desc data
                                   child: TextFormField(
-                                    controller: taskDescriptionController,
+                                    style: TextStyle(
+                                      color:
+                                          provider.appTheme == ThemeMode.light
+                                              ? AppTheme.blackColor
+                                              : AppTheme.whiteColor,
+                                    ),
+                                    controller: taskDescriptionController =
+                                        TextEditingController(
+                                            text: args.description),
                                     validator: (text) {
                                       if (text == null || text.isEmpty) {
                                         return AppLocalizations.of(context)!
@@ -192,7 +182,6 @@ class _EditTaskScreenState extends State<EditTaskScreen>
                                       return null;
                                     },
                                     decoration: InputDecoration(
-                                      hintText: args.description,
                                       hintStyle: Theme.of(context)
                                           .textTheme
                                           .bodyLarge!
@@ -230,19 +219,36 @@ class _EditTaskScreenState extends State<EditTaskScreen>
                                     onTap: () {
                                       pickDate();
                                     },
-                                    child: Text(
-                                      DateFormat.yMMMd().format(args.dateTime!),
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleSmall!
-                                          .copyWith(
-                                            color: provider.appTheme ==
-                                                    ThemeMode.light
-                                                ? AppTheme.blackColor
-                                                : AppTheme.whiteColor,
+                                    //handling showing selcteddate
+                                    child: selectedDate == DateTime.now()
+                                        ? Text(
+                                            DateFormat.yMMMd()
+                                                .format(args.dateTime!),
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall!
+                                                .copyWith(
+                                                  color: provider.appTheme ==
+                                                          ThemeMode.light
+                                                      ? AppTheme.blackColor
+                                                      : AppTheme.whiteColor,
+                                                ),
+                                          )
+                                        : Text(
+                                            DateFormat.yMMMd()
+                                                .format(selectedDate),
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall!
+                                                .copyWith(
+                                                  color: provider.appTheme ==
+                                                          ThemeMode.light
+                                                      ? AppTheme.blackColor
+                                                      : AppTheme.whiteColor,
+                                                ),
                                           ),
-                                    ),
                                   ),
                                 ),
                                 Padding(
@@ -250,31 +256,43 @@ class _EditTaskScreenState extends State<EditTaskScreen>
                                   child: Center(
                                     //add task button
 
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        FireBaseUtils.updateTaskFromList(args);
-                                        listProvider.getTasksList();
-                                        // listProvider.updateTaskDetails(Task(
-                                        //     title: taskTitleController.text,
-                                        //     description:
-                                        //         taskDescriptionController.text
-                                        //             .trim(),
-                                        //     dateTime: DateTime.now()));
-                                        // listProvider.getTasksList();
-                                        // print("task edit");
+                                    child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            foregroundColor:
+                                                AppTheme.whiteColor,
+                                            backgroundColor:
+                                                AppTheme.primaryColor),
+                                        onPressed: () {
+                                          editTask();
 
-                                        fToast.showToast(
-                                            child: editToast,
+                                          listProvider
+                                              .updateTaskDetails(widget.task);
+                                          listProvider.getTasksList();
+
+                                          fToast.showToast(
+                                            child: Toasts(
+                                                message: AppLocalizations.of(
+                                                        context)!
+                                                    .taskEdited),
                                             toastDuration: Duration(seconds: 1),
-                                            gravity: ToastGravity.TOP);
-                                      },
-                                      child: AnimatedIcon(
-                                        icon: AnimatedIcons.add_event,
-                                        progress: animationController,
-                                        size: 80,
-                                        color: AppTheme.primaryColor,
-                                      ),
-                                    ),
+                                            gravity: ToastGravity.TOP,
+                                          );
+                                        },
+                                        child: Text(
+                                            AppLocalizations.of(context)!.save,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium!
+                                                .copyWith(
+                                                  fontSize: 20,
+                                                  color: provider.appTheme ==
+                                                          ThemeMode.light
+                                                      ? AppTheme.whiteColor
+                                                      : AppTheme.whiteColor,
+                                                ))),
                                   ),
                                 )
                               ],
@@ -303,5 +321,13 @@ class _EditTaskScreenState extends State<EditTaskScreen>
       selectedDate = chosenDate;
     }
     setState(() {});
+  }
+
+  void editTask() {
+    if (formkey.currentState?.validate() == true) {
+      widget.task.title = taskTitleController.text;
+      widget.task.description = taskDescriptionController.text;
+      widget.task.dateTime = selectedDate;
+    }
   }
 }

@@ -16,5 +16,13 @@
     "dark":"ليلي",
     "locale":"ar",
     "hintTitle":"ادخل عنوان المهمه",
-    "hintDesc":"ادخل وصف المهمه"
+    "hintDesc":"ادخل وصف المهمه",
+    "unknownDate": "وقت غير معروف ",
+    "unknownTask": "مهمه غير معلومه",
+    "save":"حفظ",
+    "isDone":"تمت",
+    "delete":"إزاله", 
+    "taskAdded":"تمت إضافه المهمه بنجاح",
+    "taskEdited": "تم تعديل المهمه بنجاح",
+    "taskRemoved":"تمت إزاله المهمه بنجاح"
 }
