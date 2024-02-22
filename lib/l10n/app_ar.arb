@@ -3,6 +3,7 @@
     "taskTitle":"عنوان المهمه",
     "taskDesc":"وصف المهمه",
     "addTask":"إضافه مهمه",
+    "editTask":"تعديل مهمه",
     "errorMessegeTitle":"أضف عنوان من فضلك",
     "errorMessegeDesc":"أضف وصف من فضلك",
     "selectDate":"اختيار ميعاد",
