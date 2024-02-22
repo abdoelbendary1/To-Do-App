@@ -31,7 +31,7 @@ class FireBaseUtils {
     return getTasksCollection().doc(task.id).delete();
   }
 
-  static Future<void> updateTaskFromList(Task task) {
-    return getTasksCollection().doc(task.id).update({"title": task.title});
-  }
+  // static Future<void> updateTaskFromList(Task task) {
+  //   return getTasksCollection().doc(task.id).update({"title": task.title});
+  // }
 }

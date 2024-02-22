@@ -38,10 +38,10 @@ class _TaskListTabState extends State<TaskListTab> {
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
-    var listProivider = Provider.of<ListProvider>(context);
-    if (listProivider.tasksList == null) {
+    var listProvider = Provider.of<ListProvider>(context);
+    if (listProvider.tasksList == null) {
       print("build screen");
-      listProivider.getTasksList();
+      listProvider.getTasksList();
     }
 
     return Column(
@@ -133,14 +133,14 @@ class _TaskListTabState extends State<TaskListTab> {
                   ),
                 ),
                 controller: _controller,
-                firstDate: DateTime.now(),
-                focusDate: listProivider.selectedDate,
+                firstDate: DateTime.now().subtract(Duration(days: 7)),
+                focusDate: listProvider.selectedDate,
                 lastDate: DateTime.now().add(Duration(days: 365)),
                 onDateChange: (date) {
-                  listProivider.changeSelectedDay(date);
-                  listProivider.getTasksList();
+                  listProvider.changeSelectedDay(date);
+                  listProvider.getTasksList();
 
-                  print(listProivider.selectedDate);
+                  print(listProvider.selectedDate);
                 },
               ),
             ),
@@ -149,13 +149,13 @@ class _TaskListTabState extends State<TaskListTab> {
         Expanded(
           child: ListView.separated(
             itemBuilder: (context, index) => TaskBox(
-              task: listProivider.tasksList[index],
+              task: listProvider.tasksList[index],
             ),
             separatorBuilder: (context, index) => const Divider(
               height: 20,
               color: Colors.transparent,
             ),
-            itemCount: listProivider.tasksList.length,
+            itemCount: listProvider.tasksList.length,
           ),
         )
       ],

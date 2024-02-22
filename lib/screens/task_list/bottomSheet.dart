@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +9,7 @@ import 'package:todo_app1/firebaseUtils.dart';
 import 'package:todo_app1/model/task.dart';
 import 'package:todo_app1/providers/ListProvider.dart';
 import 'package:todo_app1/providers/app_config_provider.dart';
+import 'package:todo_app1/screens/task_list/toasts.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
@@ -25,48 +27,20 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet>
   TextEditingController taskDescriptionController = TextEditingController();
   late AnimationController animationController;
   late ListProvider listProvider;
+  FToast fToast = FToast();
 
   //? toast msg
-  FToast fToast = FToast();
-  Widget taskToast = Container(
-    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(25.0),
-      color: AppTheme.greenColor.withOpacity(0.9),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          Icons.check,
-          color: AppTheme.whiteColor,
-        ),
-        SizedBox(
-          width: 12.0,
-        ),
-        Text(
-          "Task added Succesfully!",
-          style: TextStyle(color: AppTheme.whiteColor, fontSize: 20),
-        ),
-      ],
-    ),
-  );
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    //fToast = FToast();
-    // if you want to use context from globally instead of content we need to pass navigatorKey.currentContext!
     fToast.init(context);
-
     animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 400));
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     animationController.dispose();
     super.dispose();
   }
@@ -118,6 +92,11 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet>
 
                         //task title data
                         child: TextFormField(
+                          style: TextStyle(
+                            color: provider.appTheme == ThemeMode.light
+                                ? AppTheme.blackColor
+                                : AppTheme.whiteColor,
+                          ),
                           controller: taskTitleController,
                           validator: (text) {
                             if (text == null || text.isEmpty) {
@@ -144,6 +123,11 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet>
 
                         //task desc data
                         child: TextFormField(
+                          style: TextStyle(
+                            color: provider.appTheme == ThemeMode.light
+                                ? AppTheme.blackColor
+                                : AppTheme.whiteColor,
+                          ),
                           controller: taskDescriptionController,
                           validator: (text) {
                             if (text == null || text.isEmpty) {
@@ -211,9 +195,12 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet>
                               addTask();
 
                               fToast.showToast(
-                                  child: taskToast,
-                                  toastDuration: Duration(seconds: 1),
-                                  gravity: ToastGravity.TOP);
+                                child: Toasts(
+                                    message: AppLocalizations.of(context)!
+                                        .taskAdded),
+                                toastDuration: Duration(seconds: 1),
+                                gravity: ToastGravity.TOP,
+                              );
                             },
                             child: AnimatedIcon(
                               icon: AnimatedIcons.add_event,

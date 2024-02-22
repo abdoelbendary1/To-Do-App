@@ -1,7 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app1/firebaseUtils.dart';
@@ -9,6 +10,7 @@ import 'package:todo_app1/model/task.dart';
 import 'package:todo_app1/providers/ListProvider.dart';
 import 'package:todo_app1/providers/app_config_provider.dart';
 import 'package:todo_app1/screens/task_list/editTaskScreen.dart';
+import 'package:todo_app1/screens/task_list/toasts.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -20,7 +22,29 @@ class TaskBox extends StatefulWidget {
   State<TaskBox> createState() => _TaskBoxState();
 }
 
-class _TaskBoxState extends State<TaskBox> {
+class _TaskBoxState extends State<TaskBox> with SingleTickerProviderStateMixin {
+  late AnimationController animationController;
+  late ListProvider listProvider;
+  FToast fToast = FToast();
+  
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    fToast.init(context);
+
+    animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
@@ -31,38 +55,41 @@ class _TaskBoxState extends State<TaskBox> {
         extentRatio: 0.5,
         children: [
           SlidableAction(
+            spacing: 10,
             autoClose: true,
-            borderRadius: const BorderRadius.only(
-              bottomRight: Radius.circular(10),
-              topRight: Radius.circular(10),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(10),
             ),
             onPressed: (context) {
               FireBaseUtils.deleteTaskFromList(widget.task).timeout(
                 Duration(
                   milliseconds: 500,
                 ),
-                onTimeout: () => listProivider.getTasksList(),
+                onTimeout: () {
+                  listProivider.getTasksList();
+                },
+              );
+
+              fToast.showToast(
+                child: Toasts(message: AppLocalizations.of(context)!.taskRemoved),
+                toastDuration: Duration(seconds: 1),
+                gravity: ToastGravity.TOP,
               );
             },
             backgroundColor: AppTheme.redColor,
             foregroundColor: AppTheme.whiteColor,
             icon: Icons.delete,
-            label: 'Delete',
+            label: AppLocalizations.of(context)!.delete,
           ),
         ],
       ),
       child: GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, EditTaskScreen.routeName,
-              arguments: Task(
-                title: widget.task.title,
-                description: widget.task.description,
-                dateTime: widget.task.dateTime,
-                isDone: false,
-              ));
+              arguments: widget.task);
         },
         child: Container(
-          margin: EdgeInsets.symmetric(
+          margin: const EdgeInsets.symmetric(
             horizontal: 16,
           ),
           height: MediaQuery.of(context).size.height * 0.15,
@@ -91,23 +118,37 @@ class _TaskBoxState extends State<TaskBox> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       RichText(
-                          text: TextSpan(
-                        text: widget.task.title ?? "Unknown task",
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(color: AppTheme.primaryColor),
-                      )),
+                        text: TextSpan(
+                          text: widget.task.title ??
+                              AppLocalizations.of(context)!.unknownTask,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(color: AppTheme.primaryColor),
+                        ),
+                      ),
                       Row(
                         children: [
-                          Icon(Icons.alarm),
+                          Icon(
+                            Icons.alarm,
+                            color: provider.appTheme == ThemeMode.light
+                                ? AppTheme.blackColor
+                                : AppTheme.whiteColor,
+                          ),
                           SizedBox(
                             width: 10,
                           ),
                           Text(
                             DateFormat.Hm().format(widget.task.dateTime!) ??
-                                "Unknown Date ",
-                            style: Theme.of(context).textTheme.bodyLarge,
+                                AppLocalizations.of(context)!.unknownDate,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                  color: provider.appTheme == ThemeMode.light
+                                      ? AppTheme.blackColor
+                                      : AppTheme.whiteColor,
+                                ),
                           ),
                         ],
                       ),
@@ -119,7 +160,7 @@ class _TaskBoxState extends State<TaskBox> {
                 ),
                 widget.task.isDone!
                     ? Text(
-                        "Is done!",
+                        AppLocalizations.of(context)!.isDone,
                         style: Theme.of(context)
                             .textTheme
                             .titleLarge!
@@ -134,6 +175,7 @@ class _TaskBoxState extends State<TaskBox> {
                         child: IconButton(
                           onPressed: () {
                             listProivider.updateTaskIsDone(widget.task);
+
                             listProivider.getTasksList();
 
                             print(widget.task.isDone);

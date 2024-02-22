@@ -16,5 +16,14 @@
     "locale":"en",
     "hintTitle":"enter task title",
     "hintDesc":"enter task description",
-    "editTask":"Edit Task"
+    "unknownDate": "Unknown Date ",
+    "unknownTask": "Unknown Task ",
+    "save":"ٍSave",
+    "isDone":"Done",
+    "editTask":"Edit Task",
+    "delete":"Delete",
+    "taskAdded":"Task added Succesfully",
+    "taskEdited": "Task Edited Succesfully",
+    "taskRemoved":"Task deleted Succesfully"
+
 }
