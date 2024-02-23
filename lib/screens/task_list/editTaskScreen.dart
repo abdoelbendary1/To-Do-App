@@ -12,9 +12,9 @@ import 'package:todo_app1/screens/task_list/toasts.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 
 class EditTaskScreen extends StatefulWidget {
-  EditTaskScreen({super.key, required this.task});
+  EditTaskScreen({super.key});
   static const String routeName = "/EditTaskScreen";
-  Task task;
+  late Task task;
   @override
   State<EditTaskScreen> createState() => _EditTaskScreenState();
 }

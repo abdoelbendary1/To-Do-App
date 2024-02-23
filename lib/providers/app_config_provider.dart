@@ -1,60 +1,46 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_app1/firebaseUtils.dart';
-import 'package:todo_app1/model/task.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppConfigProvider extends ChangeNotifier {
   String appLanguage = "en";
   ThemeMode appTheme = ThemeMode.light;
 
-  void changeLanguage(String newLanguage) {
+  AppConfigProvider(bool isDark, bool isEN) {
+    if (isDark) {
+      appTheme == ThemeMode.dark;
+    } else {
+      appTheme == ThemeMode.light;
+    }
+    if (isEN) {
+      appLanguage = "en";
+    } else {
+      appLanguage = "ar";
+    }
+  }
+
+  void changeLanguage(String newLanguage) async {
+    SharedPreferences sharedpref = await SharedPreferences.getInstance();
     if (appLanguage == newLanguage) {
+      sharedpref.setBool("isEN", true);
       return;
     }
+    sharedpref.setBool("isEN", false);
     appLanguage = newLanguage;
     notifyListeners();
   }
 
-  void changeTheme(ThemeMode newTheme) {
+  void changeTheme(ThemeMode newTheme) async {
+    SharedPreferences sharedPref = await SharedPreferences.getInstance();
     if (appLanguage == newTheme) {
+      sharedPref.setBool("isDark", true);
       return;
     }
+    sharedPref.setBool("isDark", false);
     appTheme = newTheme;
     notifyListeners();
   }
 
   bool isDark() {
     return appTheme == ThemeMode.dark;
-  }
-
-  List<Task> tasksList = [];
-  DateTime selectedDate = DateTime.now();
-  void getAllTasksFromFireStore() async {
-    QuerySnapshot<Task> querySnapshot =
-        await FireBaseUtils.getTasksCollection().get();
-    //return list of tasks
-    tasksList = querySnapshot.docs.map((doc) {
-      return doc.data();
-    }).toList();
-
-   tasksList = tasksList.where((task) {
-      if (selectedDate.day == task.dateTime?.day &&
-          selectedDate.month == task.dateTime?.month &&
-          selectedDate.year == task.dateTime?.year) {
-        return true;
-      }
-      return false;
-    }).toList();
-
-    // tasksList
-    //     .sort((task1, task2) => task1.dateTime!.compareTo(task2.dateTime!));
-    notifyListeners();
-  }
-
-  void changeSelectedDate(DateTime newSelectedDate) {
-    selectedDate = newSelectedDate;
-    // refresh tasks list with filtering
-
-    notifyListeners();
   }
 }

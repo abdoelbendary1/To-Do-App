@@ -4,7 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app1/model/task.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo_app1/auth/SignUp/SignUp.dart';
+import 'package:todo_app1/auth/login/login.dart';
+
 import 'package:todo_app1/providers/ListProvider.dart';
 import 'package:todo_app1/providers/app_config_provider.dart';
 import 'package:todo_app1/screens/homeScreen.dart';
@@ -14,6 +17,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences sharedPref = await SharedPreferences.getInstance();
+  final isDark = sharedPref.getBool("isDark") ?? false;
+  final isEN = sharedPref.getBool("isEN") ?? false;
   //Unhandled Exception: PlatformException(null-error, Host platform returned null) firebase (Solved).
   Platform.isAndroid
       ? await Firebase.initializeApp(
@@ -32,19 +38,22 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => AppConfigProvider(),
+          create: (context) => AppConfigProvider(isDark, isEN),
         ),
         ChangeNotifierProvider(
           create: (context) => ListProvider(),
         ),
       ],
-      child: const MyApp(),
+      child: MyApp(
+        isDark: isDark,
+      ),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key, required this.isDark});
+  final isDark;
 
   // This widget is the root of your application.
   @override
@@ -58,15 +67,12 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightMode,
-      initialRoute: HomeScreen.routeName,
+      initialRoute: LoginScreen.routeName,
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
-        EditTaskScreen.routeName: (context) => EditTaskScreen(
-              task: Task(
-                  title: "title",
-                  description: "description",
-                  dateTime: DateTime.now()),
-            ),
+        EditTaskScreen.routeName: (context) => EditTaskScreen(),
+        LoginScreen.routeName: (context) => LoginScreen(),
+        SignUpScreen.routeName: (context) => SignUpScreen(),
       },
     );
   }
