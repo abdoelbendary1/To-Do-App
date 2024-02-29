@@ -5,8 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app1/auth/login/login.dart';
 import 'package:todo_app1/dialogUtils.dart';
+import 'package:todo_app1/firebaseUtils.dart';
+import 'package:todo_app1/model/user.dart';
 import 'package:todo_app1/screens/homeScreen.dart';
+import 'package:todo_app1/providers/auth_provider.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -16,13 +21,39 @@ class FirebaseAuthServices {
   Future<User?> signUpWithEmailAndPassword(
       {required String email,
       required String password,
+      required String username,
       required BuildContext context}) async {
     try {
+      DialogUtils.showLoading(
+        context: context,
+        message: AppLocalizations.of(context)!.message6,
+      );
       final credential = await _db.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      MyUser myUser = MyUser(
+        id: credential.user?.uid ?? "",
+        name: username,
+        email: email,
+      );
+      var authProvider =
+          Provider.of<AuthinticationProvider>(context, listen: false);
+      authProvider.updateUser(myUser);
+
+      await FireBaseUtils.addUserToFireStore(myUser);
+      DialogUtils.hideLoading(
+        context,
+      );
       print("create success!");
+
+      DialogUtils.showMessage(
+          context: context,
+          message: AppLocalizations.of(context)!.message2,
+          posActionName: AppLocalizations.of(context)!.posActionName,
+          posAction: () {
+            Navigator.pushNamed(context, LoginScreen.routeName);
+          });
       return credential.user;
     } on FirebaseAuthException catch (e) {
       /*  DialogUtils.showLoading(context: context, message: "Loading...");
@@ -38,7 +69,7 @@ class FirebaseAuthServices {
         posActionName: "try again",
       ); */
       if (e.code == 'weak-password') {
-        DialogUtils.showLoading(context: context, message: "Loading...");
+        /* DialogUtils.showLoading(context: context, message: "Loading..."); */
 
         //hide Loading
         DialogUtils.hideLoading(
@@ -52,7 +83,7 @@ class FirebaseAuthServices {
         );
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        DialogUtils.showLoading(context: context, message: "Loading...");
+        /*   DialogUtils.showLoading(context: context, message: "Loading..."); */
 
         //hide Loading
         DialogUtils.hideLoading(
@@ -67,6 +98,12 @@ class FirebaseAuthServices {
         print('The account already exists for that email.');
       }
     } catch (e) {
+      /*  DialogUtils.showLoading(context: context, message: "Loading..."); */
+
+      //hide Loading
+      DialogUtils.hideLoading(
+        context,
+      );
       print(e);
     }
   }
@@ -85,6 +122,16 @@ class FirebaseAuthServices {
 
       final credential = await _db.signInWithEmailAndPassword(
           email: email, password: password);
+
+      var user =
+          await FireBaseUtils.readUserFromFireStore(credential.user?.uid ?? "");
+      var authProvider =
+          Provider.of<AuthinticationProvider>(context, listen: false);
+      authProvider.updateUser(user);
+
+      /* if (user == null) {
+        return;
+      } */
       print("Login success!");
 
       //hide Loading
@@ -117,7 +164,7 @@ class FirebaseAuthServices {
         );
         print('No user found for that email.');
       } else if (e.code == 'invalid-credential') {
-        DialogUtils.showLoading(context: context, message: "loading...");
+        /*  DialogUtils.showLoading(context: context, message: "loading..."); */
 
         //hide Loading
         DialogUtils.hideLoading(
@@ -131,8 +178,8 @@ class FirebaseAuthServices {
         );
         print('wrong password.');
       } else if (e.code == 'too-many-requests') {
-        DialogUtils.showLoading(context: context, message: "loading...");
-
+        /* DialogUtils.showLoading(context: context, message: "loading...");
+ */
         //hide Loading
         DialogUtils.hideLoading(
           context,

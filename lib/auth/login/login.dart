@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           CustomTextField(
                             validator: (text) {
-                              if (text == null || text.isEmpty) {
+                              if (text == null || text.trim().isEmpty) {
                                 return AppLocalizations.of(context)!.errorEmail;
                               }
                               final bool emailValid = RegExp(
@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           CustomTextField(
                             validator: (text) {
-                              if (text == null || text.isEmpty) {
+                              if (text == null || text.trim().isEmpty) {
                                 return AppLocalizations.of(context)!
                                     .errorPassword;
                               }

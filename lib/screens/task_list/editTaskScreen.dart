@@ -8,13 +8,13 @@ import 'package:todo_app1/providers/ListProvider.dart';
 import 'package:todo_app1/providers/app_config_provider.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo_app1/providers/auth_provider.dart';
 import 'package:todo_app1/screens/task_list/toasts.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 
 class EditTaskScreen extends StatefulWidget {
   EditTaskScreen({super.key});
   static const String routeName = "/EditTaskScreen";
-  late Task task;
   @override
   State<EditTaskScreen> createState() => _EditTaskScreenState();
 }
@@ -22,12 +22,16 @@ class EditTaskScreen extends StatefulWidget {
 class _EditTaskScreenState extends State<EditTaskScreen>
     with SingleTickerProviderStateMixin {
   var formkey = GlobalKey<FormState>();
-  TextEditingController taskTitleController = TextEditingController();
-  TextEditingController taskDescriptionController = TextEditingController();
+  late TextEditingController taskTitleController =
+      taskTitleController = TextEditingController(text: args.title);
+  late TextEditingController taskDescriptionController =
+      taskDescriptionController = TextEditingController(text: args.description);
   var selectedDate = DateTime.now();
   late AnimationController animationController;
   late ListProvider listProvider;
   FToast fToast = FToast();
+  late Task task;
+  late var args;
 
   //? toast msg
 
@@ -43,6 +47,14 @@ class _EditTaskScreenState extends State<EditTaskScreen>
   }
 
   @override
+  void didChangeDependencies() {
+    args = ModalRoute.of(context)!.settings.arguments as Task;
+    task = args;
+
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     // TODO: implement dispose
     animationController.dispose();
@@ -53,9 +65,10 @@ class _EditTaskScreenState extends State<EditTaskScreen>
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
     listProvider = Provider.of<ListProvider>(context);
+    var authProvider =
+        Provider.of<AuthinticationProvider>(context, listen: false);
 
-    var args = ModalRoute.of(context)!.settings.arguments as Task;
-    widget.task = args;
+    /* var args = ModalRoute.of(context)!.settings.arguments as Task; */
 
     return Scaffold(
       extendBody: true,
@@ -82,7 +95,7 @@ class _EditTaskScreenState extends State<EditTaskScreen>
               child: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
                 child: Container(
-                  height: MediaQuery.of(context).size.height * 0.7,
+                  height: MediaQuery.of(context).size.height * 0.8,
                   margin: EdgeInsets.only(bottom: 150),
                   width: MediaQuery.of(context).size.width * .85,
                   decoration: BoxDecoration(
@@ -131,8 +144,7 @@ class _EditTaskScreenState extends State<EditTaskScreen>
                                               ? AppTheme.blackColor
                                               : AppTheme.whiteColor,
                                     ),
-                                    controller: taskTitleController =
-                                        TextEditingController(text: args.title),
+                                    controller: taskTitleController,
                                     validator: (text) {
                                       if (text == null || text.isEmpty) {
                                         return AppLocalizations.of(context)!
@@ -141,7 +153,8 @@ class _EditTaskScreenState extends State<EditTaskScreen>
                                       return null;
                                     },
                                     decoration: InputDecoration(
-                                      // hintText: args.title,
+                                      /* helperText: "old task : ${args.title}", */
+                                      hintText: args.title,
                                       hintStyle: Theme.of(context)
                                           .textTheme
                                           .bodyLarge!
@@ -171,9 +184,7 @@ class _EditTaskScreenState extends State<EditTaskScreen>
                                               ? AppTheme.blackColor
                                               : AppTheme.whiteColor,
                                     ),
-                                    controller: taskDescriptionController =
-                                        TextEditingController(
-                                            text: args.description),
+                                    controller: taskDescriptionController,
                                     validator: (text) {
                                       if (text == null || text.isEmpty) {
                                         return AppLocalizations.of(context)!
@@ -182,6 +193,7 @@ class _EditTaskScreenState extends State<EditTaskScreen>
                                       return null;
                                     },
                                     decoration: InputDecoration(
+                                      hintText: args.description,
                                       hintStyle: Theme.of(context)
                                           .textTheme
                                           .bodyLarge!
@@ -268,9 +280,10 @@ class _EditTaskScreenState extends State<EditTaskScreen>
                                         onPressed: () {
                                           editTask();
 
-                                          listProvider
-                                              .updateTaskDetails(widget.task);
-                                          listProvider.getTasksList();
+                                          listProvider.updateTaskDetails(task,
+                                              authProvider.currentUser!.id);
+                                          listProvider.getTasksList(
+                                              authProvider.currentUser!.id);
 
                                           fToast.showToast(
                                             child: Toasts(
@@ -325,9 +338,9 @@ class _EditTaskScreenState extends State<EditTaskScreen>
 
   void editTask() {
     if (formkey.currentState?.validate() == true) {
-      widget.task.title = taskTitleController.text;
-      widget.task.description = taskDescriptionController.text;
-      widget.task.dateTime = selectedDate;
+      task.title = taskTitleController.text;
+      task.description = taskDescriptionController.text;
+      task.dateTime = selectedDate;
     }
   }
 }

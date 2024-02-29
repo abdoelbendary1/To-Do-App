@@ -31,7 +31,7 @@ class AppConfigProvider extends ChangeNotifier {
 
   void changeTheme(ThemeMode newTheme) async {
     SharedPreferences sharedPref = await SharedPreferences.getInstance();
-    if (appLanguage == newTheme) {
+    if (appTheme == newTheme) {
       sharedPref.setBool("isDark", true);
       return;
     }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,7 @@ import 'package:todo_app1/auth/login/login.dart';
 
 import 'package:todo_app1/providers/ListProvider.dart';
 import 'package:todo_app1/providers/app_config_provider.dart';
+import 'package:todo_app1/providers/auth_provider.dart';
 import 'package:todo_app1/screens/homeScreen.dart';
 import 'package:todo_app1/screens/task_list/editTaskScreen.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
@@ -30,9 +32,10 @@ void main() async {
               projectId: "to-do-app-demo-38b05"),
         )
       : await Firebase.initializeApp();
-  await FirebaseFirestore.instance.disableNetwork();
+  /*  await FirebaseFirestore.instance.disableNetwork();
   FirebaseFirestore.instance.settings =
       const Settings(cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
+ */
 
   runApp(
     MultiProvider(
@@ -43,17 +46,23 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => ListProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => AuthinticationProvider(),
+        )
       ],
       child: MyApp(
         isDark: isDark,
+        isEN: isEN,
       ),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key, required this.isDark});
+  MyApp({super.key, required this.isDark, required this.isEN});
   final isDark;
+  final isEN;
+  
 
   // This widget is the root of your application.
   @override

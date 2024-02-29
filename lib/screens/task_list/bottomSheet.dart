@@ -9,6 +9,7 @@ import 'package:todo_app1/firebaseUtils.dart';
 import 'package:todo_app1/model/task.dart';
 import 'package:todo_app1/providers/ListProvider.dart';
 import 'package:todo_app1/providers/app_config_provider.dart';
+import 'package:todo_app1/providers/auth_provider.dart';
 import 'package:todo_app1/screens/task_list/toasts.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 
@@ -49,6 +50,8 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet>
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
     listProvider = Provider.of<ListProvider>(context);
+    var authProvider =
+        Provider.of<AuthinticationProvider>(context, listen: false);
     return buildBottomSheet(provider, context);
   }
 
@@ -193,14 +196,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet>
                           child: GestureDetector(
                             onTap: () {
                               addTask();
-
-                              fToast.showToast(
-                                child: Toasts(
-                                    message: AppLocalizations.of(context)!
-                                        .taskAdded),
-                                toastDuration: Duration(seconds: 1),
-                                gravity: ToastGravity.TOP,
-                              );
                             },
                             child: AnimatedIcon(
                               icon: AnimatedIcons.add_event,
@@ -253,11 +248,18 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet>
         dateTime: selectedDate,
       );
       taskIconTapped();
-      FireBaseUtils.addTaskToFireStore(task)
-          .timeout(const Duration(milliseconds: 500), onTimeout: () {
-        listProvider.getTasksList();
-        print("task added");
+      var authProvider =
+          Provider.of<AuthinticationProvider>(context, listen: false);
+      FireBaseUtils.addTaskToFireStore(task, authProvider.currentUser!.id)
+          .then((value) {
+        listProvider.getTasksList(authProvider.currentUser!.id);
+        fToast.showToast(
+          child: Toasts(message: AppLocalizations.of(context)!.taskAdded),
+          toastDuration: Duration(seconds: 1),
+          gravity: ToastGravity.TOP,
+        );
         Navigator.pop(context);
+        print("task added");
       });
     }
   }

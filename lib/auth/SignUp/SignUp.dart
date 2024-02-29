@@ -17,13 +17,17 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  TextEditingController emailController = TextEditingController();
+  TextEditingController emailController =
+      TextEditingController(text: "abdo@gmail.com");
 
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordController =
+      TextEditingController(text: "1234567");
 
-  TextEditingController usernameController = TextEditingController();
+  TextEditingController usernameController =
+      TextEditingController(text: "abdo");
 
-  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController confirmPasswordController =
+      TextEditingController(text: "1234567");
 
   FirebaseAuthServices user = FirebaseAuthServices();
 
@@ -65,7 +69,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         children: [
                           CustomTextField(
                             validator: (text) {
-                              if (text == null || text.isEmpty) {
+                              if (text == null || text.trim().isEmpty) {
                                 return AppLocalizations.of(context)!
                                     .errorUsername;
                               }
@@ -79,7 +83,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           CustomTextField(
                             validator: (text) {
-                              if (text == null || text.isEmpty) {
+                              if (text == null || text.trim().isEmpty) {
                                 return AppLocalizations.of(context)!.errorEmail;
                               }
                               final bool emailValid = RegExp(
@@ -99,7 +103,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           CustomTextField(
                             validator: (text) {
-                              if (text == null || text.isEmpty) {
+                              if (text == null || text.trim().isEmpty) {
                                 return AppLocalizations.of(context)!
                                     .errorPassword;
                               }
@@ -118,7 +122,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           CustomTextField(
                             validator: (text) {
-                              if (text == null || text.isEmpty) {
+                              if (text == null || text.trim().isEmpty) {
                                 return AppLocalizations.of(context)!
                                     .errorConfirmPass;
                               }
@@ -209,10 +213,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void signUp() {
     if (formKey.currentState?.validate() == true) {
       user.signUpWithEmailAndPassword(
+          username: usernameController.text,
           email: emailController.text,
           password: passwordController.text,
           context: context);
-      Navigator.pushNamed(context, LoginScreen.routeName);
     }
   }
 }

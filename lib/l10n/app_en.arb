@@ -45,6 +45,7 @@
     "errorConfirmPass2": "confirm password doesn't match password",
     "message1": "The account already exists for that email",
     "message2": "login succesfully",
+    "message7": "SignUp succesfully",
     "posActionName": "Go home",
     "posActionName2": "حاول مره اخرى",
     "message3": "Wrong password",

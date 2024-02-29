@@ -5,6 +5,7 @@ import 'package:todo_app1/firebaseUtils.dart';
 import 'package:todo_app1/model/task.dart';
 import 'package:todo_app1/providers/ListProvider.dart';
 import 'package:todo_app1/providers/app_config_provider.dart';
+import 'package:todo_app1/providers/auth_provider.dart';
 import 'package:todo_app1/screens/task_list/task_box.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -39,9 +40,11 @@ class _TaskListTabState extends State<TaskListTab> {
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
     var listProvider = Provider.of<ListProvider>(context);
-    if (listProvider.tasksList == null) {
+    var authProvider =
+        Provider.of<AuthinticationProvider>(context, listen: false);
+    if (listProvider.tasksList.isEmpty) {
       print("build screen");
-      listProvider.getTasksList();
+      listProvider.getTasksList(authProvider.currentUser?.id ?? "");
     }
 
     return Column(
@@ -137,8 +140,9 @@ class _TaskListTabState extends State<TaskListTab> {
                 focusDate: listProvider.selectedDate,
                 lastDate: DateTime.now().add(Duration(days: 365)),
                 onDateChange: (date) {
-                  listProvider.changeSelectedDay(date);
-                  listProvider.getTasksList();
+                  listProvider.changeSelectedDay(
+                      date, authProvider.currentUser!.id!);
+                  listProvider.getTasksList(authProvider.currentUser!.id!);
 
                   print(listProvider.selectedDate);
                 },
