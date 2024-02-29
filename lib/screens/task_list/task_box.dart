@@ -9,6 +9,7 @@ import 'package:todo_app1/firebaseUtils.dart';
 import 'package:todo_app1/model/task.dart';
 import 'package:todo_app1/providers/ListProvider.dart';
 import 'package:todo_app1/providers/app_config_provider.dart';
+import 'package:todo_app1/providers/auth_provider.dart';
 import 'package:todo_app1/screens/task_list/editTaskScreen.dart';
 import 'package:todo_app1/screens/task_list/toasts.dart';
 import 'package:todo_app1/theme/AppTheme.dart';
@@ -26,7 +27,8 @@ class _TaskBoxState extends State<TaskBox> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   late ListProvider listProvider;
   FToast fToast = FToast();
-  
+
+  late NavigatorState _navigator;
 
   @override
   void initState() {
@@ -40,6 +42,13 @@ class _TaskBoxState extends State<TaskBox> with SingleTickerProviderStateMixin {
   }
 
   @override
+  void didChangeDependencies() {
+    _navigator = Navigator.of(context);
+
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     animationController.dispose();
     super.dispose();
@@ -49,6 +58,8 @@ class _TaskBoxState extends State<TaskBox> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
     var listProivider = Provider.of<ListProvider>(context);
+    var authProvider =
+        Provider.of<AuthinticationProvider>(context, listen: false);
     return Slidable(
       startActionPane: ActionPane(
         motion: ScrollMotion(),
@@ -61,17 +72,22 @@ class _TaskBoxState extends State<TaskBox> with SingleTickerProviderStateMixin {
               Radius.circular(10),
             ),
             onPressed: (context) {
-              FireBaseUtils.deleteTaskFromList(widget.task).timeout(
+              FireBaseUtils.deleteTaskFromList(
+                      widget.task, authProvider.currentUser!.id)
+                  .then((value) {
+                listProivider.getTasksList(authProvider.currentUser!.id);
+              }).timeout(
                 Duration(
                   milliseconds: 500,
                 ),
                 onTimeout: () {
-                  listProivider.getTasksList();
+                  listProivider.getTasksList(authProvider.currentUser!.id);
                 },
               );
 
               fToast.showToast(
-                child: Toasts(message: AppLocalizations.of(context)!.taskRemoved),
+                child:
+                    Toasts(message: AppLocalizations.of(context)!.taskRemoved),
                 toastDuration: Duration(seconds: 1),
                 gravity: ToastGravity.TOP,
               );
@@ -168,15 +184,17 @@ class _TaskBoxState extends State<TaskBox> with SingleTickerProviderStateMixin {
                       )
                     : Container(
                         width: MediaQuery.of(context).size.width * 0.2,
-                        height: MediaQuery.of(context).size.height * 0.05,
+                        height: MediaQuery.of(context).size.height * 0.06,
                         decoration: BoxDecoration(
                             color: AppTheme.primaryColor,
                             borderRadius: BorderRadius.circular(15)),
                         child: IconButton(
                           onPressed: () {
-                            listProivider.updateTaskIsDone(widget.task);
+                            listProivider.updateTaskIsDone(
+                                widget.task, authProvider.currentUser!.id);
 
-                            listProivider.getTasksList();
+                            listProivider
+                                .getTasksList(authProvider.currentUser!.id);
 
                             print(widget.task.isDone);
                           },

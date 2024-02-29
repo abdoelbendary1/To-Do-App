@@ -5,8 +5,8 @@ import 'package:todo_app1/model/task.dart';
 class ListProvider extends ChangeNotifier {
   List<Task> tasksList = [];
   DateTime selectedDate = DateTime.now();
-  void getTasksList() async {
-    tasksList = await FireBaseUtils.getAllTasks();
+  void getTasksList(String? uID) async {
+    tasksList = await FireBaseUtils.getAllTasks(uID);
     tasksList = tasksList.where((task) {
       if (selectedDate.day == task.dateTime!.day &&
           selectedDate.month == task.dateTime!.month &&
@@ -20,35 +20,38 @@ class ListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeSelectedDay(DateTime newSelectedDate) {
+  void changeSelectedDay(DateTime newSelectedDate, String? uID) {
     selectedDate = newSelectedDate;
     // refresh tasks list with filtering
-    getTasksList();
+    getTasksList(uID);
     notifyListeners();
   }
 
-  Future<void> updateTaskIsDone(Task task) async {
-    await FireBaseUtils.getTasksCollection()
+  Future<void> updateTaskIsDone(Task task, String? uID) async {
+    await FireBaseUtils.getTasksCollection(uID)
         .doc(task.id)
         .update({'isDone': true})
         .timeout(
           Duration(
             milliseconds: 300,
           ),
-          onTimeout: () => getTasksList(),
+          onTimeout: () => getTasksList(uID),
         )
         .catchError((error) => print("Failed to update user: $error"));
   }
 
-  Future<void> updateTaskDetails(Task task) async {
-    await FireBaseUtils.getTasksCollection()
+  Future<void> updateTaskDetails(Task task, String? uID) async {
+    await FireBaseUtils.getTasksCollection(uID)
         .doc(task.id)
         .update(task.toFireStore())
+        .then(
+          (value) => getTasksList(uID),
+        )
         .timeout(
           Duration(
             milliseconds: 300,
           ),
-          onTimeout: () => getTasksList(),
+          onTimeout: () => getTasksList(uID),
         )
         .catchError((error) => print("Failed to update user: $error"));
     print("Edited");
